@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+    <style>
+        .clipboard-btn {
+            cursor: pointer;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="margin-top: 100px;">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="row">
+                <div class="col-md-11">
+                    <input type="text" class="form-control" id="url-input" placeholder="Введите Url">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-primary" id="url-submit-button">Укоротить</button>
+                </div>
+            </div>
+
+            <div class="text-danger" id="url-submit-error">Не удалось укоротить. Точно url корректный?</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="help-block">
+                <ul id="url-history"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        var originalUrl = $('#url-input');
+        var history = $('#url-history');
+        var errorDisplay = $('#url-submit-error');
+        errorDisplay.hide();
+
+
+        $('#url-submit-button').on('click', function() {
+
+            var url = originalUrl.val();
+
+            if (!url) {
+                return false;
+            }
+
+            $.ajax({
+                url: '{{ addUrlRoute }}',
+                dataType : "json",
+                data: {'originalUrl': url},
+                success: function (data, textStatus) {
+                    if (!data['success']) {
+                        errorDisplay.show();
+
+                        return false;
+                    }
+
+                    errorDisplay.hide();
+                    originalUrl.val('');
+
+                    var newClipboardButton = $('<span class="glyphicon glyphicon-copy clipboard-btn">');
+                    newClipboardButton.attr('data-clipboard-text', data['shortUrl']);
+
+                    var newHistoryElement = $('<li>')
+                            .append($('<a>').attr('href', data['shortUrl']).append(data['shortUrl']))
+                            .append(' - ' + url + ' ')
+                            .append(newClipboardButton);
+
+                    history.prepend(newHistoryElement);
+                    new Clipboard(newClipboardButton.get(0));
+                },
+                error: function () {
+                    errorDisplay.show();
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

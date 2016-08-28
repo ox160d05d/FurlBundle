@@ -1,0 +1,25 @@
+#parameters:
+#    furl_bundle.url_validator: 'hard_faq_cafe_furl.url_validator'
+#    furl_bundle.url_encoder: 'hard_faq_cafe_furl.gmpbase62endec'
+
+
+services:
+    hard_faq_cafe_furl.storage_manager:
+        private: true
+        class: HardFAQCafe\FurlBundle\Util\StorageManager
+        arguments:
+            - '@doctrine'
+
+
+    hard_faq_cafe_furl.gmpbase62endec:
+        private: true
+        class: HardFAQCafe\FurlBundle\Util\GmpBase62Coder
+
+    hard_faq_cafe_furl.phpbase62endec:
+        private: true
+        class: HardFAQCafe\FurlBundle\Util\PurePhpBase62Coder
+
+    hard_faq_cafe_furl.url_validator:
+        private: true
+        class: HardFAQCafe\FurlBundle\Util\UrlValidator
+        arguments: ['@validator']

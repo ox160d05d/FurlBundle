@@ -1,0 +1,13 @@
+hard_faq_cafe_furl_index:
+    path: /
+    defaults: { _controller: HardFAQCafeFurlBundle:Default:index }
+
+hard_faq_cafe_furl_add_new_url:
+    path: /add-new-url/
+    defaults: { _controller: HardFAQCafeFurlBundle:Default:getShortUrl }
+
+hard_faq_cafe_furl_get_url:
+    path: /{urlCode}
+    requirements:
+        shortUrl: '[0-9a-zA-Z]+'
+    defaults: { _controller: HardFAQCafeFurlBundle:Default:redirectByCode }
